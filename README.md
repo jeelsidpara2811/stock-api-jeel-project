@@ -1,14 +1,15 @@
-# JEEL's Stock API
-
-A FastAPI-based application for retrieving and comparing stock market statistics.
+# Stock API
+A FastAPI-based backend for retrieving, analyzing, and comparing stock market statistics using yfinance.
+Built for high performance and easy deployment with Docker.
 ---
 
-## Features
-- Analysis of current momentum of stock
-- Compare stocks performance
-- Preview stock statistics
-- Built with **FastAPI**(Swagger UI) for high performance
-- Ready to deploy with **Docker**
+## Features 
+- **Fetch** historical stock market data on demand via yfinance
+- **Analyze** current momentum and trends
+- **Compare** performance of multiple stocks
+- **Preview** basic key metrics: high, low, average, last close
+- **Interactive** API docs via Swagger UI (/docs)
+- **Docker-ready** for quick deployment
 
 ---
 
@@ -71,9 +72,9 @@ docker run -p 8000:8000 stock-api
 http://localhost:8000/docs
 ```
 ## API Endpoint
-1. /api/compare - For Comparing stock performance
+1. /api/compare - For Comparing stock performance within a specific time range
 2. /api/latest - For change monentum 
-3. /api/stats - For stock statistics 
+3. /api/stats - For stock statistics like [high,low,last close]
 
 ## Example of API usage
 
@@ -146,3 +147,35 @@ python -m pytest test/test_stats.py
 # For testing entire project
 python -m pytest -v
 ```
+## CI/CD Pipeline – Pseudocode
+Trigger:
+    On push or pull_request to main branch
+
+Steps:
+1. Checkout repository
+- Uses: actions/checkout
+
+2. Set up Python environment
+- Uses: actions/setup-python
+- Specify: Python 3.x
+
+3. Install dependencies
+- Command: pip install -r requirements.txt
+
+4. Run automated tests
+- Command: pytest --maxfail=1 --disable-warnings -q
+
+5. Build Docker image
+- Command: docker build -t <image-name>:<tag> .
+
+6. Authenticate to container registry
+- Example: Docker Hub or GitHub Packages login
+
+7. Push Docker image to registry
+- Command: docker push <registry>/<image-name>:<tag>
+
+8. Deploy to cloud server
+- SSH into server
+- Pull latest Docker image
+- Stop and remove old container
+- Run new container with required environment variables and port mappings
