@@ -81,31 +81,37 @@ http://localhost:8000/docs
 ### For compare Endpoint
 Request
 ```
-# Use this URL on web and 
+# via URL query parameter and then use pretty-print
+http://127.0.0.1:8000/api/compare?ticker1=MSFT&ticker2=GOOGL&start=2023-01-01&end=2023-12-31
+
+# via Swagger UI
 http://127.0.0.1:8000/docs 
-# Then set ticker1=GOOGL, ticker2=MSFT, start=2023-01-01, end=2023-03-31
+# Then set ticker1=MSFT, ticker2=GOOGL, start=2023-01-01, end=2023-12-31
 ```
 Response
 ```
 {
-  "GOOGL": {
-    "high": 107.54,
-    "low": 84.35,
-    "average": 95.24,
-    "last_close": 100.29
-  },
   "MSFT": {
-    "high": 279.49,
-    "low": 214.98,
-    "average": 249.79,
-    "last_close": 279.09
+    "high": 384.3,
+    "low": 219.35,
+    "average": 313.95,
+    "last_close": 376.04
+  },
+  "GOOGL": {
+    "high": 142.68,
+    "low": 84.86,
+    "average": 118.79,
+    "last_close": 139.69
   }
 }
 ```
 ### For latest Endpoint
 Request
 ```
-# Use this URL on web and
+# via URL query parameter and then use pretty-print
+http://127.0.0.1:8000/api/latest?ticker=GOOGL
+
+# via Swagger UI
 http://127.0.0.1:8000/docs 
 # Then set ticker=GOOGL
 ```
@@ -113,16 +119,19 @@ Response
 ```
 {
   "ticker": "GOOGL",
-  "previous_close": 194.67,
-  "last_close": 196.09,
-  "change": 1.42,
-  "change_percent": 0.73
+  "previous_close": 196.52,
+  "last_close": 201.42,
+  "change": 4.9,
+  "change_percent": 2.49
 }
 ```
 ### For stats Endpoint
 Request
 ```
-# Use this URL on web and
+# via URL query parameter and then use pretty-print
+http://127.0.0.1:8000/api/stats?ticker=MSFT&start=2023-01-01&end=2023-12-31
+
+# via Swagger UI
 http://127.0.0.1:8000/docs 
 # Then set ticker=MSFT, start=2023-01-01, end=2023-12-31
 
@@ -148,34 +157,27 @@ python -m pytest test/test_stats.py
 python -m pytest -v
 ```
 ## CI/CD Pipeline – Pseudocode
-Trigger:
-    On push or pull_request to main branch
+```
+Trigger: On push or pull_request to main branch
 
 Steps:
 1. Checkout repository
-- Uses: actions/checkout
 
 2. Set up Python environment
-- Uses: actions/setup-python
-- Specify: Python 3.x
+   - Install Python (e.g., 3.11)
+   - Install dependencies from requirements.txt
 
-3. Install dependencies
-- Command: pip install -r requirements.txt
+3. Run automated tests
+   - Use pytest for unit/integration tests
 
-4. Run automated tests
-- Command: pytest --maxfail=1 --disable-warnings -q
+4. Build Docker image
+   - docker build -t <your-image-name> 
 
-5. Build Docker image
-- Command: docker build -t <image-name>:<tag> .
+5. Publish Docker image
+   - Push to container registry
 
-6. Authenticate to container registry
-- Example: Docker Hub or GitHub Packages login
-
-7. Push Docker image to registry
-- Command: docker push <registry>/<image-name>:<tag>
-
-8. Deploy to cloud server
-- SSH into server
-- Pull latest Docker image
-- Stop and remove old container
-- Run new container with required environment variables and port mappings
+6. Deploy
+   - Connect to main server 
+   - Stop/remove previous container
+   - Pull new image and start container
+```

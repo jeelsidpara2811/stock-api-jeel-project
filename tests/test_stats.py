@@ -3,6 +3,7 @@ from app.main import app
 
 client = TestClient(app)
 
+
 def test_valid_response():
     response = client.get("/api/stats?ticker=MSFT&start=2023-01-01&end=2023-12-31")
     assert response.status_code == 200
