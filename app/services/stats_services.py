@@ -7,6 +7,7 @@ from typing import Optional, Dict
 
 # Function to fetcg stock statistics
 def fetch_stock_stats(ticker: str, start: Optional[str], end: Optional[str]) -> Optional[Dict]:
+    
     hist = yf.Ticker(ticker).history(start=start, end=end, auto_adjust=False)
     
     result = {

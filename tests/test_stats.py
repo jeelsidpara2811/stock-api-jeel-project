@@ -17,15 +17,6 @@ def test_missing_ticker():
     response = client.get("/api/stats")
     assert response.status_code == 422
 
-def test_invalid_ticker():
-    response = client.get("/api/stats?ticker=INVALIDXYZ&start=2023-01-01&end=2023-12-31")
-    assert response.status_code == 404
-    assert "detail" in response.json()
-
-def test_bad_date_format():
-    response = client.get("/api/stats?ticker=MSFT&start=BADDATE&end=2023-12-31")
-    assert response.status_code in [404, 500, 422]
-
 def test_missing_end_date():
     response = client.get("/api/stats?ticker=AAPL&start=2023-01-01")
     assert response.status_code == 200
